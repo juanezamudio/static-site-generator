@@ -1,6 +1,6 @@
 # Custom Static Site Generator
 
-A modern, flexible static site generator built with [technologies used - I don't see your codebase, so please replace this placeholder]. Transform your markdown content into beautifully rendered static websites with ease.
+A modern, flexible static site generator built with Python. Transform your markdown content into beautifully rendered static websites with ease.
 
 ## 🚀 Features
 
@@ -13,8 +13,6 @@ A modern, flexible static site generator built with [technologies used - I don't
 
 ## 🛠️ Technology Stack
 
-[Please customize this section based on your actual tech stack]
-
 - **Core**: Node.js/Python/etc.
 - **Template Engine**: [Your choice]
 - **Markdown Parser**: [Your choice]
@@ -24,24 +22,29 @@ A modern, flexible static site generator built with [technologies used - I don't
 ## 📦 Installation
 
 Clone the repository
-git clone https://github.com/yourusername/project-name.git
+```git clone https://github.com/yourusername/project-name.git```
+
 Navigate to project directory
-cd project-name
+```cd project-name```
+
 Install dependencies
-npm install # or your package manager's command
+```npm install # or your package manager's command```
 
 ## 🚦 Getting Started
 
 1. **Create a new project**
 
+```
 bash
 ssg init my-website
 cd my-website
+```
 
 2. **Add content**
 
 Create markdown files in the `content` directory:
 
+```
 markdown
 ---
 title: My First Post
@@ -49,16 +52,21 @@ date: 2024-03-21
 ---
 Welcome to my blog
 This is my first post using the static site generator.
+```
 
 3. **Build your site**
 
+```
 bash:README.md
 ssg build
+```
 
 4. **Start development server**
 
+```
 bash
 ssg serve
+```
 
 ## 📁 Project Structure
 
