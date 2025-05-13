@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from markdownconverter import split_nodes_delimiter
+from markdownconverter import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 class TestMarkdownConverter(unittest.TestCase):
 
@@ -94,3 +94,31 @@ class TestMarkdownConverter(unittest.TestCase):
             new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
         except ValueError as e:
             self.assertEqual(str(e), "invalid markdown syntax: missing closing delimiter - '_'")
+
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_markdown_no_images(self):
+        matches = extract_markdown_images(
+            "This is text with a [link](https://i.imgur.com/zjjcJKZ.png) but no images"
+        )
+
+        self.assertListEqual([], matches)
+
+    def test_extract_markdown_links(self):
+        matches = extract_markdown_links(
+            "This is text with a link in the [message](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        
+        self.assertListEqual([("message", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_markdown__no_links(self):
+        matches = extract_markdown_links(
+            "This is text with no links in the message and an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        
+        self.assertListEqual([], matches)
