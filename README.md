@@ -1,155 +1,92 @@
-# Custom Static Site Generator
+# Python Static Site Generator (Node-Based HTML Builder)
 
-A modern, flexible static site generator built with Python. Transform your markdown content into beautifully rendered static websites with ease.
+A Python library and demonstration project for converting Markdown-like text into HTML using a custom node-based system. This project is a foundation for building a static site generator, with a focus on parsing text and generating HTML elements programmatically.
 
-## 🚀 Features
+## Features
 
-- **Markdown Support**: Write content in Markdown and convert it to clean, semantic HTML
-- **Custom Templates**: Flexible templating system for consistent layouts
-- **Asset Management**: Automatic handling of CSS, JavaScript, and media files
-- **Fast Build Times**: Optimized build process for quick generation
-- **Development Server**: Live preview with hot-reloading
-- **SEO Friendly**: Generate meta tags and sitemap automatically
+- **Node-Based HTML Generation**: Compose HTML using `HTMLNode`, `LeafNode`, and `ParentNode` classes.
+- **Markdown-Like Parsing**: Convert text with bold (`**bold**`), italic (`_italic_`), code (`` `code` ``), links (`[text](url)`), and images (`![alt](url)`) into HTML nodes.
+- **Extensive Unit Tests**: Comprehensive test suite for all node types and Markdown parsing logic.
 
-## 🛠️ Technology Stack
-
-- **Core**: Node.js/Python/etc.
-- **Template Engine**: [Your choice]
-- **Markdown Parser**: [Your choice]
-- **Build Tools**: [Your build system]
-- **Development Server**: [Your dev server]
-
-## 📦 Installation
-
-Clone the repository
-```git clone https://github.com/yourusername/project-name.git```
-
-Navigate to project directory
-```cd project-name```
-
-Install dependencies
-```npm install # or your package manager's command```
-
-## 🚦 Getting Started
-
-1. **Create a new project**
+## Project Structure
 
 ```
-bash
-ssg init my-website
-cd my-website
+static-site-generator/
+├── main.sh                # Run the demo script
+├── test.sh                # Run all unit tests
+├── src/
+│   ├── main.py            # Demo: creates and prints example nodes
+│   ├── htmlnode.py        # Base HTML node class
+│   ├── leafnode.py        # Leaf node (text, images, etc.)
+│   ├── parentnode.py      # Parent node (with children)
+│   ├── textnode.py        # Text node and Markdown parsing
+│   ├── markdownconverter.py # Markdown parsing utilities
+│   └── test_*.py          # Unit tests
+└── README.md
 ```
 
-2. **Add content**
+## Getting Started
 
-Create markdown files in the `content` directory:
+### Prerequisites
+- Python 3.7+
 
-```
-markdown
----
-title: My First Post
-date: 2024-03-21
----
-Welcome to my blog
-This is my first post using the static site generator.
+### Run the Demo
+To see a demonstration of node creation and HTML output:
+
+```bash
+./main.sh
 ```
 
-3. **Build your site**
+This will run `src/main.py`, which prints example `TextNode` and `HTMLNode` objects.
 
-```
-bash:README.md
-ssg build
-```
+### Run the Tests
+To run all unit tests:
 
-4. **Start development server**
-
-```
-bash
-ssg serve
+```bash
+./test.sh
 ```
 
-## 📁 Project Structure
+Or directly with Python:
 
-```
-my-website/
-├── content/          # Markdown content files
-├── templates/        # HTML templates
-├── static/          # Static assets (CSS, JS, images)
-├── config.yaml      # Site configuration
-└── dist/           # Generated static site
+```bash
+python3 -m unittest discover -s src
 ```
 
-## ⚙️ Configuration
+## Usage Example
 
-Create a `config.yaml` file in your project root:
+You can use the provided classes to build HTML programmatically:
 
-```yaml
-site:
-  title: My Awesome Site
-  description: A beautiful static website
-  baseUrl: https://example.com
-  
-build:
-  output: ./dist
-  assets: ./static
+```python
+from textnode import TextNode, TextType, text_node_to_html_node
+from leafnode import LeafNode
+from parentnode import ParentNode
+
+# Create a bold text node and convert to HTML
+node = TextNode("Bold text", TextType.BOLD)
+html_node = text_node_to_html_node(node)
+print(html_node.to_html())  # <b>Bold text</b>
+
+# Compose parent and leaf nodes
+child1 = LeafNode("span", "child1")
+child2 = LeafNode("b", "child2")
+parent = ParentNode("div", [child1, child2])
+print(parent.to_html())  # <div><span>child1</span><b>child2</b></div>
 ```
 
-## 🎨 Customization
+## Markdown Parsing Features
+- **Bold**: `**bold**` → `<b>bold</b>`
+- **Italic**: `_italic_` → `<i>italic</i>`
+- **Code**: `` `code` `` → `<code>code</code>`
+- **Links**: `[text](url)` → `<a href="url">text</a>`
+- **Images**: `![alt](url)` → `<img src="url" alt="alt">`
 
-### Templates
+## Contributing
 
-Create custom templates in the `templates` directory:
+Contributions are welcome! Please open issues or pull requests for improvements or bug fixes.
 
-```html
-<!-- templates/post.html -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{ post.title }}</title>
-  </head>
-  <body>
-    {{ content }}
-  </body>
-</html>
-```
+## License
 
-### Styling
-
-Add your CSS in the `static/css` directory and reference it in your templates.
-
-## 🔧 Advanced Usage
-
-- **Custom Plugins**: Extend functionality with plugins
-- **Data Files**: Include JSON/YAML data files
-- **Markdown Extensions**: Support for custom markdown syntax
-- **Build Hooks**: Pre and post-build processing
-
-## 📈 Performance
-
-- Minimal build times
-- Optimized asset processing
-- Efficient template rendering
-- Small output size
-
-## 🤝 Contributing
-
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- List any libraries or tools that inspired your project
-- Credit any resources or tutorials you found helpful
-- Thank contributors and supporters
-
-## 📫 Contact
-
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Twitter: [@yourhandle](https://twitter.com/yourhandle)
-- Blog: [your-blog.com](https://your-blog.com)
+MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
