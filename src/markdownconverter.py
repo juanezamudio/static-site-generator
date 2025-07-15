@@ -35,3 +35,38 @@ def extract_markdown_images(text):
 
 def extract_markdown_links(text):
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+
+def split_nodes_image(old_nodes):
+    pass
+
+def split_nodes_link(old_nodes):
+    result = []
+    
+    for node in old_nodes:
+        extracted_links = extract_markdown_links(node.text)
+
+        if len(extracted_links) == 0:
+            result.append(node)
+            return result
+        
+        text_nodes = []
+
+        for i in range(len(extracted_links)):
+            text_split = node.text.split(f"[{extracted_links[i][0]}]({extracted_links[i][1]})", 1)
+            text_nodes.append(text_split[0])
+            print(text_split[0])
+        
+        new_nodes = []
+
+        for i in range(len(text_nodes)):
+            if text_nodes[i] == "":
+                continue
+
+            if i % 2 == 0:
+                new_nodes.append(TextNode(text_nodes[i], TextType.TEXT))
+            else:
+                new_nodes.append(TextNode(text_nodes[i], TextType.LINK))
+        
+        result.extend(new_nodes)
+
+split_nodes_link([TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com)", TextType.TEXT)])
