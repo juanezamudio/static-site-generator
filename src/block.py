@@ -34,7 +34,7 @@ def block_to_block_type(markdown_block):
     
     split_lines = markdown_block.splitlines()
     
-    if (split_lines[0].startswith("```") and split_lines[-1].endswith("```")):
+    if (len(split_lines) > 1 and split_lines[0].startswith("```") and split_lines[-1].endswith("```")):
         return BlockType.CODE
     
     if (split_lines[0].startswith("#", 0, 5)):
