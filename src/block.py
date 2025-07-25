@@ -52,7 +52,7 @@ def block_to_block_type(markdown_block):
         if (not line.startswith(">")):
             all_quoted = False
 
-        if (not line.startswith("- ")):
+        if (not line.startswith("- ") and not line.startswith("* ")):
             all_unordered = False
 
         if (not line.startswith(prefix)):
