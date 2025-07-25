@@ -24,7 +24,7 @@ def header_block_to_html_node(block):
 
     match counter:
         case 1: header = "h1"
-        case 2: header =  "h2"
+        case 2: header = "h2"
         case 3: header = "h3"
         case 4: header = "h4"
         case 5: header = "h5"
@@ -100,15 +100,15 @@ def code_block_to_html_node(block):
     return HTMLNode("pre", None, [children])
 
 def text_to_children(text):
-    result = []
+    children = []
     
     text_nodes = text_to_textnodes(text)
 
     for node in text_nodes:
         html_node = text_node_to_html_node(node)
-        result.append(html_node)
+        children.append(html_node)
 
-    return result
+    return children
 
 def convert_to_blocks(markdown):
     blocks = markdown_to_blocks(markdown)
