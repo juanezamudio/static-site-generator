@@ -48,14 +48,15 @@ def block_to_block_type(markdown_block):
 
     for line in split_lines:
         prefix = f"{counter}. "
+        stripped = line.lstrip()
         
-        if (not line.startswith(">")):
+        if (not stripped.startswith(">")):
             all_quoted = False
 
-        if (not line.startswith("- ") and not line.startswith("* ")):
+        if not (stripped.startswith("- ") or stripped.startswith("* ")):
             all_unordered = False
 
-        if (not line.startswith(prefix)):
+        if (not stripped.startswith(prefix)):
             all_ordered = False
         
         counter += 1

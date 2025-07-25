@@ -11,7 +11,7 @@ class HTMLNode:
             raise ValueError("HTMLNode must have a tag")
         
         if not self.children:
-            raise ValueError("ParentNode must have children")
+            return f"<div></div>"
         
         result = ""
 

@@ -19,7 +19,7 @@ def header_block_to_html_node(block):
                 counter += 1
             case _: break
     
-    stripped_block = block[counter:].lstrip()
+    stripped_block = block[counter:].strip()
     header = ""
 
     match counter:
@@ -89,7 +89,9 @@ def ordered_list_block_to_html_node(block):
 def code_block_to_html_node(block):
 
     if block.startswith("```") and block.endswith("```"):
-        stripped_block = block[3:-3].strip("\n")
+        stripped_block = block[3:-3]
+        if stripped_block.startswith("\n"):
+            stripped_block = stripped_block[1:]
     else:
         stripped_block = block
 
@@ -158,10 +160,3 @@ def convert_to_blocks(markdown):
                 raise ValueError("Block type is not defined")
 
     return HTMLNode("div", None, children, None)
-
-
-convert_to_blocks("""
-This is **bolded** paragraph
-text in a p
-tag here
-""")
