@@ -1,10 +1,14 @@
 from textnode import TextNode, TextType
 from htmlnode import HTMLNode
-from os import path, listdir, mkdir
+from os import path, listdir, mkdir, makedirs
 from shutil import copy, rmtree
+import re
+from html_node_markdown import markdown_to_html_node
 
 dir_path_static = "./static"
 dir_path_public = "./public"
+dir_path_content = "./content"
+dir_path_template = "./template.html"
 
 def copy_static(src, dst):
     if path.exists(dst):
@@ -24,14 +28,73 @@ def copy_static(src, dst):
         else:
             copy_static(src_path, dst_path)
 
+def extract_title(markdown):
+    # Split the markdown into lines
+    lines = markdown.split('\n')
+    
+    # Look for the first line that starts with #
+    for line in lines:
+        match = re.match(r"#+\s+(.*)", line.strip())
+        if match:
+            return match.group(1).strip()
+    
+    # If no header is found, raise an exception
+    raise Exception("There is no header in the markdown")
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+
+    with open(from_path, "r") as markdown_file:
+        markdown = markdown_file.read()
+
+    with open(template_path, "r") as template_file:
+        template = template_file.read()
+
+    html_string = markdown_to_html_node(markdown).to_html()
+    title = extract_title(markdown)
+
+    template = template.replace("{{ Title }}", title)
+    template = template.replace("{{ Content }}", html_string)
+
+    if path.dirname(dest_path):
+        makedirs(path.dirname(dest_path), exist_ok=True)
+    
+    with open(dest_path, "w") as dest_file:
+        dest_file.write(template)
+
+def generate_pages_recursive(dir_path_content, template_path, dir_path_public):
+    files = listdir(dir_path_content)
+
+    for file in files:
+        src_path = path.join(dir_path_content, file)
+        dest_path = path.join(dir_path_public, file)
+
+        if path.isfile(src_path):
+            if file.endswith(".md"):
+                html_file = file[:-3] + ".html"
+                dest_path = path.join(dir_path_public, html_file)
+            generate_page(src_path, template_path, dest_path)
+        else:
+            generate_pages_recursive(src_path, template_path, dest_path)
+
 def main():
     # text_node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
     # html_node = HTMLNode("p", "This is a paragraph", None, {"href": "https://www.google.com"})
 
     # print(text_node)
     # print(html_node)
+    print("Deleting public directory...")
+    if path.exists(dir_path_public):
+        rmtree(dir_path_public)
 
     print("Copying static files to public directory...")
     copy_static(dir_path_static, dir_path_public)
+
+    print("Generating pages...")
+    generate_pages_recursive(
+        dir_path_content,
+        dir_path_template,
+        dir_path_public
+    )
 
 main()
