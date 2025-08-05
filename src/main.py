@@ -3,12 +3,14 @@ from htmlnode import HTMLNode
 from os import path, listdir, mkdir, makedirs
 from shutil import copy, rmtree
 import re
+import sys
 from html_node_markdown import markdown_to_html_node
 
-dir_path_static = "./static"
-dir_path_public = "./public"
-dir_path_content = "./content"
-dir_path_template = "./template.html"
+dir_path_static = "static"
+dir_path_docs = "docs"
+dir_path_content = "content"
+dir_path_template = "template.html"
+base_path = "/"
 
 def copy_static(src, dst):
     if path.exists(dst):
@@ -55,6 +57,9 @@ def generate_page(from_path, template_path, dest_path):
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html_string)
+    template = template.replace("href=/", f"href={base_path}")
+    template = template.replace("src=/", f"src={base_path}")
+
 
     if path.dirname(dest_path):
         makedirs(path.dirname(dest_path), exist_ok=True)
@@ -62,39 +67,37 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as dest_file:
         dest_file.write(template)
 
-def generate_pages_recursive(dir_path_content, template_path, dir_path_public):
+def generate_pages_recursive(dir_path_content, template_path, dir_path_docs):
     files = listdir(dir_path_content)
 
     for file in files:
         src_path = path.join(dir_path_content, file)
-        dest_path = path.join(dir_path_public, file)
+        dest_path = path.join(dir_path_docs, file)
 
         if path.isfile(src_path):
             if file.endswith(".md"):
                 html_file = file[:-3] + ".html"
-                dest_path = path.join(dir_path_public, html_file)
+                dest_path = path.join(dir_path_docs, html_file)
             generate_page(src_path, template_path, dest_path)
         else:
             generate_pages_recursive(src_path, template_path, dest_path)
 
 def main():
-    # text_node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    # html_node = HTMLNode("p", "This is a paragraph", None, {"href": "https://www.google.com"})
+    if len(sys.argv) > 1:
+        base_path = sys.argv[1]
+    
+    print("Deleting docs directory...")
+    if path.exists(dir_path_docs):
+        rmtree(dir_path_docs)
 
-    # print(text_node)
-    # print(html_node)
-    print("Deleting public directory...")
-    if path.exists(dir_path_public):
-        rmtree(dir_path_public)
-
-    print("Copying static files to public directory...")
-    copy_static(dir_path_static, dir_path_public)
+    print("Copying static files to docs directory...")
+    copy_static(dir_path_static, dir_path_docs)
 
     print("Generating pages...")
     generate_pages_recursive(
         dir_path_content,
         dir_path_template,
-        dir_path_public
+        dir_path_docs,
     )
 
 main()
