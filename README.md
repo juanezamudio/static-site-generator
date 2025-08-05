@@ -1,6 +1,6 @@
-# Python Static Site Generator (Node-Based HTML Builder)
+# Static Site Generator
 
-A robust, extensible Python static site generator that converts Markdown into HTML using a custom node-based parsing system. This project is designed for clarity, testability, and easy extension, making it ideal for learning, hacking, or as a foundation for your own static site generator.
+A powerful Python-based static site generator that converts Markdown files into a fully functional website. This project features a custom Markdown parser, template system, and supports GitHub Pages deployment out of the box.
 
 ---
 
@@ -25,72 +25,75 @@ This project parses Markdown files and converts them into HTML using a tree of c
 ---
 
 ## Features
-- **Block-level Markdown support:**
-  - Headings (`#`, `##`, ...)
-  - Paragraphs
-  - Blockquotes (`>`)
-  - Unordered lists (`-`, `*`)
-  - Ordered lists (`1.`, `2.`, ...)
-  - Code blocks (fenced with triple backticks)
-- **Inline Markdown support:**
-  - Bold (`**bold**`)
-  - Italic (`_italic_`)
-  - Inline code (`` `code` ``)
-  - Links (`[text](url)`)
-- **Node-based HTML generation:**
-  - Each block or inline element is represented as a node (e.g., `HTMLNode`, `TextNode`)
-  - Easy to extend for new HTML/Markdown features
-- **Comprehensive unit tests:**
-  - All block types, inline features, and edge cases are tested
-  - Complex/nested markdown scenarios covered
-- **Extensible and maintainable:**
-  - Modular codebase with clear separation of concerns
-  - Easy to add new block or inline types
+
+- **Markdown to HTML Conversion**
+  - Full support for CommonMark syntax
+  - Nested lists and complex document structures
+  - Code blocks with syntax highlighting
+  - Inline formatting (bold, italic, code, links)
+
+- **Template System**
+  - Custom HTML templates with placeholders
+  - Automatic title extraction from Markdown
+  - Support for custom base paths
+
+- **Build System**
+  - Recursive directory processing
+  - Automatic static file copying
+  - Clean build directory handling
+
+- **Deployment Ready**
+  - GitHub Pages compatible
+  - Configurable base paths for different environments
+  - Optimized for production use
 
 ---
 
 ## Project Structure
 ```
 static-site-generator/
-├── main.sh                  # Demo script
-├── test.sh                  # Test runner
-├── README.md                # This file
-├── LICENSE                  # License
-├── public/                  # (Optional) Output/static files
-└── src/
-    ├── main.py              # Example/demo usage
-    ├── htmlnode.py          # HTML node base class
-    ├── leafnode.py          # Leaf node (text, images, etc.)
-    ├── parentnode.py        # Parent node (with children)
-    ├── textnode.py          # Text node and inline parsing
-    ├── block.py             # Block type definitions
-    ├── block_markdown.py    # Block-level markdown parsing
-    ├── inline_markdown.py   # Inline markdown parsing
-    ├── html_node_markdown.py# Markdown-to-HTML node conversion logic
-    ├── test_htmlnode.py     # Unit tests for HTMLNode
-    ├── test_leafnode.py     # Unit tests for LeafNode
-    ├── test_parentnode.py   # Unit tests for ParentNode
-    ├── test_textnode.py     # Unit tests for TextNode
-    ├── test_block_markdown.py # Unit tests for block parsing
-    ├── test_inline_markdown.py # Unit tests for inline parsing
-    └── test_html_node_markdown.py # Unit tests for markdown-to-HTML conversion
+├── content/           # Your markdown content
+│   ├── blog/          # Blog posts
+│   └── contact/       # Contact page
+├── static/            # Static assets (CSS, images)
+│   └── images/        # Image assets
+├── docs/              # Generated HTML output (for GitHub Pages)
+├── src/               # Source code
+│   ├── main.py        # Main script
+│   ├── htmlnode.py    # HTML node classes
+│   ├── leafnode.py    # Leaf node implementation
+│   └── ...            # Other source files
+├── template.html      # HTML template
+├── build.sh           # Build script
+└── main.sh            # Development server script
 ```
 
 ---
 
-## Installation & Setup
-1. **Clone the repository:**
+## Getting Started
+
+### Prerequisites
+- Python 3.8+
+- Git (for deployment)
+
+### Installation
+
+1. Clone the repository:
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/juanezamudio/static-site-generator.git
    cd static-site-generator
    ```
-2. **(Optional) Create a virtual environment:**
+
+2. Set up a virtual environment (recommended):
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
    ```
-3. **Install dependencies:**
-   - No external dependencies are required for core functionality. If you add features, update this section accordingly.
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ---
 
@@ -162,20 +165,17 @@ print(html)
 
 ## Testing
 
-### Running the Tests
-- All tests are located in `src/test_html_node_markdown.py` and other `test_*.py` files.
-- To run all tests:
-  ```bash
-  python3 -m unittest discover -s src
-  ```
-  Or, to run just the main suite:
-  ```bash
-  python3 -m unittest src/test_html_node_markdown.py
-  ```
-  Or, using the provided script:
-  ```bash
-  ./test.sh
-  ```
+The project includes a comprehensive test suite. To run all tests:
+
+```bash
+python -m unittest discover -s src -p "test_*.py"
+```
+
+Or run individual test files:
+
+```bash
+python -m unittest src/test_main.py
+```
 
 ### Test Coverage
 - All block types (headings, paragraphs, blockquotes, lists, code blocks)
