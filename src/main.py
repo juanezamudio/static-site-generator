@@ -10,7 +10,6 @@ dir_path_static = "static"
 dir_path_docs = "docs"
 dir_path_content = "content"
 dir_path_template = "template.html"
-base_path = "/"
 
 def copy_static(src, dst):
     if path.exists(dst):
@@ -43,8 +42,8 @@ def extract_title(markdown):
     # If no header is found, raise an exception
     raise Exception("There is no header in the markdown")
 
-def generate_page(from_path, template_path, dest_path):
-    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+def generate_page(from_path, template_path, dest_path, base_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path} with base path {base_path}")
 
     with open(from_path, "r") as markdown_file:
         markdown = markdown_file.read()
@@ -57,8 +56,10 @@ def generate_page(from_path, template_path, dest_path):
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html_string)
-    template = template.replace("href=/", f"href={base_path}")
-    template = template.replace("src=/", f"src={base_path}")
+    template = template.replace('href="/', f'href="{base_path}')
+    template = template.replace('src="/', f'src="{base_path}')
+    template = template.replace('url(/', f"url('{base_path}")
+    template = template.replace("url(/", f'url("{base_path}')
 
 
     if path.dirname(dest_path):
@@ -67,7 +68,7 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, "w") as dest_file:
         dest_file.write(template)
 
-def generate_pages_recursive(dir_path_content, template_path, dir_path_docs):
+def generate_pages_recursive(dir_path_content, template_path, dir_path_docs, base_path):
     files = listdir(dir_path_content)
 
     for file in files:
@@ -78,13 +79,21 @@ def generate_pages_recursive(dir_path_content, template_path, dir_path_docs):
             if file.endswith(".md"):
                 html_file = file[:-3] + ".html"
                 dest_path = path.join(dir_path_docs, html_file)
-            generate_page(src_path, template_path, dest_path)
+            generate_page(src_path, template_path, dest_path, base_path)
         else:
-            generate_pages_recursive(src_path, template_path, dest_path)
+            generate_pages_recursive(src_path, template_path, dest_path, base_path)
 
 def main():
     if len(sys.argv) > 1:
         base_path = sys.argv[1]
+    else:
+        base_path = "/"
+    
+    # Make sure base_path ends with a slash
+    if not base_path.endswith("/"):
+        base_path += "/"
+    
+    print(f"Using base path: '{base_path}'")  # Debug print
     
     print("Deleting docs directory...")
     if path.exists(dir_path_docs):
@@ -98,6 +107,7 @@ def main():
         dir_path_content,
         dir_path_template,
         dir_path_docs,
+        base_path  # Make sure this is passed through
     )
 
 main()
